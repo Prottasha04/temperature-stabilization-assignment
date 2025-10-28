@@ -1,5 +1,54 @@
 # Temperature stabilization using inter-process communication
 
+### Description:
+
+This project implements a temperature stabilization system using TCP sockets to allow multiple processes to communicate with each other. The system consists of one central (server) process and four external (client) processes. Each client connects to the server through a TCP connection, and all five processes exchange temperature values until the system becomes stable.
+
+The server starts with an initial temperature provided as a command-line argument.
+Each client also starts with its own ID (1–4) and an initial temperature.
+
+Each client sends its temperature to the server.
+The server receives all four client temperatures, updates its own temperature, and then sends the new central temperature back to the clients.
+
+Both the server and clients update their temperatures using the following formulas:
+
+External process:
+externalTemp = (3 * externalTemp + 2 * centralTemp) / 5
+
+Central process:
+centralTemp = (2 * centralTemp + (T1 + T2 + T3 + T4)) / 6
+
+
+The system keeps repeating this exchange until the temperature changes between iterations are smaller than a small value (EPS = 1e-3).
+When that happens, the server sends a "DONE" message to all clients, and the program stops.
+
+Key Points:
+
+The program uses TCP sockets for communication between processes.
+
+There is one server process and four client processes.
+
+The system runs until all temperatures stabilize.
+
+The code was written and tested on a Linux environment (CSE4001 container).
+
+Example Output:
+
+When running, the server shows each iteration and the calculated central temperature.
+After several iterations, it prints something like:
+
+[S] Stabilized at 316.78 after 12 iterations.
+
+
+Each client prints its updated temperature and ends with a message such as:
+
+[C1] DONE final=316.78
+
+### Output Screenshot
+
+![](terminals.png)
+
+
 ### :warning: This is a Linux/Unix OS assignment. It is not an OS/161 Assignment
 
 This means that you will not write code for OS/161. Instead, you will write and test your code on a Linux or any Unix-based OS, e.g., the Linux environment that comes with your CSE4001 container or any Linux machine, AWS, Mac OS X (Terminal). 
